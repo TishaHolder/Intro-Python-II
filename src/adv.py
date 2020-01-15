@@ -1,28 +1,18 @@
 from room import Room
 from player import Player
 from item import Item
-
-#Declare all the items
-
-item = {
-    'outside_item':  Item("outsideI",
-                     "outside item description"),
-
-    'foyer_item':    Item("foyerI", """foyer item description."""),
-
-    'overlook_item': Item("overlookI", """overlook item description."""),
-
-    'narrow_item':   Item("narrowI", """narrow item description."""),
-
-    'treasure_item': Item("treasureI", """treasure item description."""),
-}
+from item import Umbrella
+from item import FlashLight
+from item import Binoculars
+from item import Directions
+from item import Chest
 
 
 # Declare all the rooms
 
 room = {
     'outside':  Room("Outside Cave Entrance",
-                     "North of you, the cave mount beckons"),
+                     "North of you, the cave mount beckons."),
 
     'foyer':    Room("Foyer", """Dim light filters in from the south. Dusty
 passages run north and east."""),
@@ -41,7 +31,6 @@ earlier adventurers. The only exit is to the south."""),
 
 
 # Link rooms together
-
 room['outside'].n_to = room['foyer']
 room['foyer'].s_to = room['outside']
 room['foyer'].n_to = room['overlook']
@@ -51,32 +40,66 @@ room['narrow'].w_to = room['foyer']
 room['narrow'].n_to = room['treasure']
 room['treasure'].s_to = room['narrow']
 
+#Declare all the items
+
+umbrella = Umbrella("umbrella", "protect yourself from the elements", "large")
+
+flashlight = FlashLight("flashlight", """you might need this to see better.""", "very bright")
+
+binoculars = Binoculars("binoculars", """see the scenic views from the overlook.""", "100")
+
+directions = Directions("directions", """you will need this if you get lost.""", "portrait")
+
+chest = Chest("chest", """collect your treasures.""", "empty") 
+
+outside_items = [umbrella]
+foyer_items = [flashlight]
+overlook_items = [binoculars]
+narrow_items = [directions]
+treasure_items = [chest]
+
+# Add items to rooms
+room['outside'].room_items = outside_items
+room['foyer'].room_items = foyer_items
+room['overlook'].room_items = overlook_items
+room['narrow'].room_items = narrow_items
+room['treasure'].room_items = treasure_items
+
 def get_user_choice(choice):   
     
     if player.current_room.name == room["outside"].name and choice == "n":
-        player.current_room = room["foyer"]  
-        room.room_items = item["foyer_item"]     
+       #player.current_room = room["foyer"]  
+        #room.room_items = item["foyer_item"] 
+        player.current_room = room['outside'].n_to        
+        player.current_room.room_items = room['foyer'].room_items
     
     elif player.current_room.name == room["foyer"].name and choice == "s":
-        player.current_room = room["outside"] 
+        player.current_room = room['foyer'].s_to        
+        player.current_room.room_items = room['outside'].room_items
 
     elif player.current_room.name == room["foyer"].name and choice == "n":
-        player.current_room = room["overlook"] 
+        player.current_room = room['foyer'].n_to        
+        player.current_room.room_items = room['overlook'].room_items 
 
     elif player.current_room.name == room["foyer"].name and choice == "e":
-        player.current_room = room["narrow"] 
+         player.current_room = room['foyer'].e_to        
+         player.current_room.room_items = room['narrow'].room_items 
 
     elif player.current_room.name == room["overlook"].name and choice == "s":
-        player.current_room = room["foyer"] 
+         player.current_room = room['overlook'].s_to        
+         player.current_room.room_items = room['foyer'].room_items 
 
     elif player.current_room.name == room["narrow"].name and choice == "w":
-        player.current_room = room["foyer"] 
+         player.current_room = room['narrow'].w_to        
+         player.current_room.room_items = room['foyer'].room_items 
 
     elif player.current_room.name == room["narrow"].name and choice == "n":
-        player.current_room = room["treasure"] 
+         player.current_room = room['narrow'].n_to        
+         player.current_room.room_items = room['treasure'].room_items 
 
     elif player.current_room.name == room["treasure"].name and choice == "s":
-        player.current_room = room["narrow"] 
+         player.current_room = room['treasure'].s_to        
+         player.current_room.room_items = room['narrow'].room_items 
 
     else:
         print("Ooops! There is nowhere out there...")       
@@ -90,6 +113,7 @@ def get_user_choice(choice):
 #player = Player("Tom", room_obj.name, room_obj.description)
 
 player = Player("Tom", room["outside"].name, room["outside"].description)
+player.current_room.room_items = room["outside"].room_items
 
 # Write a loop that:
 #
@@ -106,7 +130,7 @@ while True:
     print("\t**********************************")
     print("\tTEXT ADVENTURE GAME")
     print("\t**********************************")
-    print("You are in the %s" %(player.current_room))
+    print("You are in the %s To see here>> %s" %(player.current_room, player.current_room.room_items))
     print("\tn >>> move to the north ")
     print("\ts >>> move to the south ")
     print("\te >>> move to the east ")
