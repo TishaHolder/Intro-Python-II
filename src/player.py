@@ -4,7 +4,10 @@
 from room import Room
 
 class Player:
-    def __init__(self, name, player_room_name, player_room_description): #current_room points to name in the Room class 
+    #current_room points to Room class 
+    def __init__(self, name, player_room_name, player_room_description, player_inventoy = []): 
         self.name = name
         self.current_room = Room(player_room_name, player_room_description)
+        self.player_inventory = []
+
 

@@ -6,6 +6,8 @@ from item import FlashLight
 from item import Binoculars
 from item import Directions
 from item import Chest
+from item import Food
+from item import Water
 
 
 # Declare all the rooms
@@ -40,7 +42,7 @@ room['narrow'].w_to = room['foyer']
 room['narrow'].n_to = room['treasure']
 room['treasure'].s_to = room['narrow']
 
-#Declare all the items
+#Declare all the room items
 
 umbrella = Umbrella("umbrella", "protect yourself from the elements", "large")
 
@@ -64,6 +66,11 @@ room['foyer'].room_items = foyer_items
 room['overlook'].room_items = overlook_items
 room['narrow'].room_items = narrow_items
 room['treasure'].room_items = treasure_items
+
+#Declare all player inventory items
+snacks = Food("snacks", "you might get the munchies", 100)
+water = FlashLight("water", """this is going to be a long day, stay hydrated.""", "spring")
+
 
 def get_user_choice(choice):   
     
@@ -109,11 +116,12 @@ def get_user_choice(choice):
 #
 
 # Make a new player object that is currently in the 'outside' room.
-#room_obj = Room(room["outside"].name, room["outside"].description)
-#player = Player("Tom", room_obj.name, room_obj.description)
+# Add items to player inventory
 
 player = Player("Tom", room["outside"].name, room["outside"].description)
 player.current_room.room_items = room["outside"].room_items
+player.player_inventory = [snacks, water]
+
 
 # Write a loop that:
 #

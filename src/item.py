@@ -45,5 +45,21 @@ class Chest(Item):
         self.status = status
 
     def __repr__(self):
-        return super().__repr__() + ", status:" + str(self.status)
+        return super().__repr__() + ", status:" + self.status
+
+class Food(Item):
+    def __init__(self, name, description, quantity):
+        super().__init__(name, description)
+        self.quantity = quantity
+
+    def __repr__(self):
+        return super().__repr__() + ", quantity:" + str(self.quantity)
+
+class Water(Item):
+    def __init__(self, name, description, type):
+        super().__init__(name, description)
+        self.type = type
+
+    def __repr__(self):
+        return super().__repr__() + ", type:" + self.type
 
