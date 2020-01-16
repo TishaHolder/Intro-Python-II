@@ -11,11 +11,15 @@ class Room:
         self.room_items = room_items    
 
         #None is used to declare an attribute in Python without a value
+        #The None keyword is used to define a null variable
         #can overwrite None in a class method
         self.n_to = None
         self.s_to = None
         self.e_to = None
         self.w_to = None
+
+    def remove_item(self, found_item_index):
+        del self.room_items[found_item_index]
 
     def __str__(self):
         return self.name + ': ' + self.description

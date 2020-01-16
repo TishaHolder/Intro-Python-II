@@ -10,4 +10,9 @@ class Player:
         self.current_room = Room(player_room_name, player_room_description)
         self.player_inventory = []
 
+    def add_item(self, found_item):
+        self.player_inventory.append(found_item)
+
+
+
 

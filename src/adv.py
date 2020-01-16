@@ -54,11 +54,11 @@ directions = Directions("directions", """you will need this if you get lost.""",
 
 chest = Chest("chest", """collect your treasures.""", "empty") 
 
-outside_items = [umbrella]
-foyer_items = [flashlight]
-overlook_items = [binoculars]
-narrow_items = [directions]
-treasure_items = [chest]
+outside_items = [umbrella.name, flashlight.name]
+foyer_items = [umbrella.name, flashlight.name]
+overlook_items = [binoculars.name, flashlight.name, umbrella.name]
+narrow_items = [directions.name, flashlight.name]
+treasure_items = [chest.name, flashlight.name]
 
 # Add items to rooms
 room['outside'].room_items = outside_items
@@ -69,24 +69,55 @@ room['treasure'].room_items = treasure_items
 
 #Declare all player inventory items
 snacks = Food("snacks", "you might get the munchies", 100)
-water = FlashLight("water", """this is going to be a long day, stay hydrated.""", "spring")
+water = Water("water", """this is going to be a long day, stay hydrated.""", "spring")
+
+def parser(choice):
+    parsed_entry = choice.split()
+    verb = False
+    verb_object = False
+    get_word = "get"
+    take_word = "take"
+    found_item_index = -1
+    found_item = None
+
+    if len(parsed_entry) == 1:
+        verb = True
+        return verb
+    elif len(parsed_entry) == 2:
+        verb_object = True
+
+        if get_word in parsed_entry or take_word in parsed_entry:
+            #index method returns the index of where the item is in the list
+            found_item_index = player.current_room.room_items.index(parsed_entry[1]) if parsed_entry[1] in player.current_room.room_items else -1
+            if found_item_index >= 0:
+                found_item = player.current_room.room_items[found_item_index]
+                player.current_room.remove_item(found_item_index)
+                player.add_item(found_item)
+            else:
+                print("I am sorry, that item is not available in this room.")
+
+            #check the second word to see if it matches the items in the current room
+            #if it is found call a remove method
+            #if it is not there print an error message
+
+
+        return verb_object  
+    
 
 
 def get_user_choice(choice):   
     
-    if player.current_room.name == room["outside"].name and choice == "n":
-       #player.current_room = room["foyer"]  
-        #room.room_items = item["foyer_item"] 
+    if  player.current_room.name == room["outside"].name and choice == "n":      
         player.current_room = room['outside'].n_to        
         player.current_room.room_items = room['foyer'].room_items
     
     elif player.current_room.name == room["foyer"].name and choice == "s":
-        player.current_room = room['foyer'].s_to        
-        player.current_room.room_items = room['outside'].room_items
+         player.current_room = room['foyer'].s_to        
+         player.current_room.room_items = room['outside'].room_items
 
     elif player.current_room.name == room["foyer"].name and choice == "n":
-        player.current_room = room['foyer'].n_to        
-        player.current_room.room_items = room['overlook'].room_items 
+         player.current_room = room['foyer'].n_to        
+         player.current_room.room_items = room['overlook'].room_items 
 
     elif player.current_room.name == room["foyer"].name and choice == "e":
          player.current_room = room['foyer'].e_to        
@@ -120,7 +151,7 @@ def get_user_choice(choice):
 
 player = Player("Tom", room["outside"].name, room["outside"].description)
 player.current_room.room_items = room["outside"].room_items
-player.player_inventory = [snacks, water]
+player.player_inventory = [snacks.name, water.name]
 
 
 # Write a loop that:
@@ -139,6 +170,7 @@ while True:
     print("\tTEXT ADVENTURE GAME")
     print("\t**********************************")
     print("You are in the %s To see here>> %s" %(player.current_room, player.current_room.room_items))
+    print("Your current inventory: %s" %(player.player_inventory))
     print("\tn >>> move to the north ")
     print("\ts >>> move to the south ")
     print("\te >>> move to the east ")
@@ -150,5 +182,6 @@ while True:
         print("Thanks for Playing. Come again soon...")
         break
     else:
+        parser(user_choice)
         get_user_choice(user_choice)
     
