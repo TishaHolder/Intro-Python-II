@@ -11,7 +11,6 @@ from item import Water
 
 
 # Declare all the rooms
-
 room = {
     'outside':  Room("Outside Cave Entrance",
                      "North of you, the cave mount beckons."),
@@ -43,15 +42,10 @@ room['narrow'].n_to = room['treasure']
 room['treasure'].s_to = room['narrow']
 
 #Declare all the room items
-
 umbrella = Umbrella("umbrella", "protect yourself from the elements", "large")
-
 flashlight = FlashLight("flashlight", """you might need this to see better.""", "very bright")
-
 binoculars = Binoculars("binoculars", """see the scenic views from the overlook.""", "100")
-
 directions = Directions("directions", """you will need this if you get lost.""", "portrait")
-
 chest = Chest("chest", """collect your treasures.""", "empty") 
 
 outside_items = [umbrella.name, flashlight.name]
@@ -71,6 +65,7 @@ room['treasure'].room_items = treasure_items
 snacks = Food("snacks", "you might get the munchies", 100)
 water = Water("water", """this is going to be a long day, stay hydrated.""", "spring")
 
+#processes the user's menu entry
 def parser(choice):
     parsed_entry = choice.split()
     verb = False
@@ -94,7 +89,11 @@ def parser(choice):
             if found_item_index >= 0:
                 found_item = player.current_room.room_items[found_item_index]
                 player.current_room.remove_item(found_item_index)
+                player.current_room.on_take(found_item)
                 player.add_item(found_item)
+                #call a method here: founditem.on_take(FOUND ITEM)
+                #this method will be in the Item class and print "you picked up NAME"
+                #create an on drop method using the same principles
             else:
                 print("I am sorry, that item is not available in this room.")
 
@@ -105,14 +104,15 @@ def parser(choice):
             if found_item_index >= 0:
                 found_item = player.player_inventory[found_item_index]
                 player.current_room.add_item(found_item)
+                player.current_room.on_drop(found_item)
                 player.drop_item(found_item_index)
             else:
                 print("I am sorry, that item is not in your inventory.")
 
         else:
-            print("I am sorry. We couldn't understand your request. Please try your request again.")     
+            print("I am sorry. We did not understand your request. Please try your request again.")     
 
-
+#controls player moves
 def get_user_choice(choice):   
     
     if  player.current_room.name == room["outside"].name and choice == "n":      
