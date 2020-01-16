@@ -48,9 +48,9 @@ binoculars = Binoculars("binoculars", """see the scenic views from the overlook.
 directions = Directions("directions", """you will need this if you get lost.""", "portrait")
 chest = Chest("chest", """collect your treasures.""", "empty") 
 
-outside_items = [umbrella.name, flashlight.name]
-foyer_items = [umbrella.name, flashlight.name]
-overlook_items = [binoculars.name, flashlight.name, umbrella.name]
+outside_items = [umbrella.name, flashlight.name, directions.name]
+foyer_items = [umbrella.name, flashlight.name, binoculars.name]
+overlook_items = [binoculars.name, flashlight.name, chest.name]
 narrow_items = [directions.name, flashlight.name]
 treasure_items = [chest.name, flashlight.name]
 
@@ -114,8 +114,10 @@ def parser(choice):
 
 #controls player moves
 def get_user_choice(choice):   
+    if choice == "i" or choice == "inventory":
+       print("Your inventory items: %s" %(player.player_inventory))
     
-    if  player.current_room.name == room["outside"].name and choice == "n":      
+    elif player.current_room.name == room["outside"].name and choice == "n":      
         player.current_room = room['outside'].n_to        
         player.current_room.room_items = room['foyer'].room_items
     
@@ -177,8 +179,8 @@ while True:
     print("\t**********************************")
     print("\tTEXT ADVENTURE GAME")
     print("\t**********************************")
-    print("You are in the %s To see here>> %s" %(player.current_room, player.current_room.room_items))
-    print("Your current inventory: %s" %(player.player_inventory))
+    print('You are in the %s \nYou can "get" or "take" any of these items >> %s' %(player.current_room, player.current_room.room_items))
+    print("\ti >>> view your inventory ")
     print("\tn >>> move to the north ")
     print("\ts >>> move to the south ")
     print("\te >>> move to the east ")

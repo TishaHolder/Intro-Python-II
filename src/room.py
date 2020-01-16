@@ -21,13 +21,13 @@ class Room:
     def add_item(self, found_item):
         self.room_items.append(found_item)
 
-    def on_take(found_item):
+    def on_take(self, found_item):
         print("You picked up %s" %(found_item))
 
     def remove_item(self, found_item_index):
         del self.room_items[found_item_index]
 
-    def on_drop(dropped_item):
+    def on_drop(self, dropped_item):
         print("You dropped %s" %(dropped_item))
 
     def __str__(self):
