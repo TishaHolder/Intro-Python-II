@@ -65,92 +65,99 @@ room['treasure'].room_items = treasure_items
 snacks = Food("snacks", "you might get the munchies", 100)
 water = Water("water", """this is going to be a long day, stay hydrated.""", "spring")
 
-#processes the user's menu entry
-def parser(choice):
-    parsed_entry = choice.split()
-    verb = False
-    verb_object = False
+#process the 4 directions
+def process_directions(choice):
+    if choice == "i":        
+       print("Your inventory items: %s" %(player.player_inventory))
+
+    else:
+
+        if player.current_room.name == room["outside"].name and choice == "n":      
+            player.current_room = room['outside'].n_to        
+            player.current_room.room_items = room['foyer'].room_items
+        
+        elif player.current_room.name == room["foyer"].name and choice == "s":
+            player.current_room = room['foyer'].s_to        
+            player.current_room.room_items = room['outside'].room_items
+
+        elif player.current_room.name == room["foyer"].name and choice == "n":
+            player.current_room = room['foyer'].n_to        
+            player.current_room.room_items = room['overlook'].room_items 
+
+        elif player.current_room.name == room["foyer"].name and choice == "e":
+            player.current_room = room['foyer'].e_to        
+            player.current_room.room_items = room['narrow'].room_items 
+
+        elif player.current_room.name == room["overlook"].name and choice == "s":
+            player.current_room = room['overlook'].s_to        
+            player.current_room.room_items = room['foyer'].room_items 
+
+        elif player.current_room.name == room["narrow"].name and choice == "w":
+            player.current_room = room['narrow'].w_to        
+            player.current_room.room_items = room['foyer'].room_items 
+
+        elif player.current_room.name == room["narrow"].name and choice == "n":
+            player.current_room = room['narrow'].n_to        
+            player.current_room.room_items = room['treasure'].room_items 
+
+        elif player.current_room.name == room["treasure"].name and choice == "s":
+            player.current_room = room['treasure'].s_to        
+            player.current_room.room_items = room['narrow'].room_items 
+        else:
+            print("Ooops! There is nowhere out there...")  
+
+def process_user_request(parsed_entry):
     get_word = "get"
     take_word = "take"
     drop_word = "drop"
     found_item_index = -1
-    found_item = None
+    found_item = None        
+
+    if get_word in parsed_entry or take_word in parsed_entry:
+        #index method returns the index of where the item is in the list
+        #it returns a ValueError if it is not found. the if statement at the end of the line prevents the value error
+        found_item_index = player.current_room.room_items.index(parsed_entry[1]) if parsed_entry[1] in player.current_room.room_items else -1
+        if found_item_index >= 0:
+            found_item = player.current_room.room_items[found_item_index]
+            player.current_room.remove_item(found_item_index)
+            player.current_room.on_take(found_item)
+            player.add_item(found_item)                
+        else:
+            print("I am sorry, that item is not available in this room.")
+
+    elif drop_word in parsed_entry:
+        #index method returns the index of where the item is in the list
+        #it returns a ValueError if it is not found. the if statement at the end of the line prevents the value error
+        found_item_index = player.player_inventory.index(parsed_entry[1]) if parsed_entry[1] in player.player_inventory else -1
+        if found_item_index >= 0:
+            found_item = player.player_inventory[found_item_index]
+            player.current_room.add_item(found_item)
+            player.current_room.on_drop(found_item)
+            player.drop_item(found_item_index)
+        else:
+            print("I am sorry, that item is not in your inventory.")
+
+    else:
+        print("I am sorry. We did not understand your request. Please try your request again.") 
+
+
+#processes the user's menu entry
+def parser(choice):
+    parsed_entry = choice.split()
+    verb = False
+    verb_object = False    
 
     if len(parsed_entry) == 1:
         verb = True
+        process_directions(choice)
         return verb
     elif len(parsed_entry) == 2:
         verb_object = True
-
-        if get_word in parsed_entry or take_word in parsed_entry:
-            #index method returns the index of where the item is in the list
-            #it returns a ValueError if it is not found. the if statement at the end of the line prevents the value error
-            found_item_index = player.current_room.room_items.index(parsed_entry[1]) if parsed_entry[1] in player.current_room.room_items else -1
-            if found_item_index >= 0:
-                found_item = player.current_room.room_items[found_item_index]
-                player.current_room.remove_item(found_item_index)
-                player.current_room.on_take(found_item)
-                player.add_item(found_item)
-                #call a method here: founditem.on_take(FOUND ITEM)
-                #this method will be in the Item class and print "you picked up NAME"
-                #create an on drop method using the same principles
-            else:
-                print("I am sorry, that item is not available in this room.")
-
-        elif drop_word in parsed_entry:
-            #index method returns the index of where the item is in the list
-            #it returns a ValueError if it is not found. the if statement at the end of the line prevents the value error
-            found_item_index = player.player_inventory.index(parsed_entry[1]) if parsed_entry[1] in player.player_inventory else -1
-            if found_item_index >= 0:
-                found_item = player.player_inventory[found_item_index]
-                player.current_room.add_item(found_item)
-                player.current_room.on_drop(found_item)
-                player.drop_item(found_item_index)
-            else:
-                print("I am sorry, that item is not in your inventory.")
-
-        else:
-            print("I am sorry. We did not understand your request. Please try your request again.")     
-
-#controls player moves
-def get_user_choice(choice):   
-    if choice == "i" or choice == "inventory":
-       print("Your inventory items: %s" %(player.player_inventory))
-    
-    elif player.current_room.name == room["outside"].name and choice == "n":      
-        player.current_room = room['outside'].n_to        
-        player.current_room.room_items = room['foyer'].room_items
-    
-    elif player.current_room.name == room["foyer"].name and choice == "s":
-         player.current_room = room['foyer'].s_to        
-         player.current_room.room_items = room['outside'].room_items
-
-    elif player.current_room.name == room["foyer"].name and choice == "n":
-         player.current_room = room['foyer'].n_to        
-         player.current_room.room_items = room['overlook'].room_items 
-
-    elif player.current_room.name == room["foyer"].name and choice == "e":
-         player.current_room = room['foyer'].e_to        
-         player.current_room.room_items = room['narrow'].room_items 
-
-    elif player.current_room.name == room["overlook"].name and choice == "s":
-         player.current_room = room['overlook'].s_to        
-         player.current_room.room_items = room['foyer'].room_items 
-
-    elif player.current_room.name == room["narrow"].name and choice == "w":
-         player.current_room = room['narrow'].w_to        
-         player.current_room.room_items = room['foyer'].room_items 
-
-    elif player.current_room.name == room["narrow"].name and choice == "n":
-         player.current_room = room['narrow'].n_to        
-         player.current_room.room_items = room['treasure'].room_items 
-
-    elif player.current_room.name == room["treasure"].name and choice == "s":
-         player.current_room = room['treasure'].s_to        
-         player.current_room.room_items = room['narrow'].room_items 
-
+        process_user_request(parsed_entry)
+        return verb_object
     else:
-        print("Ooops! There is nowhere out there...")       
+        print("I am sorry. We did not understand your request. Please try your request again.")     
+
 
 #
 # Main
@@ -193,5 +200,5 @@ while True:
         break
     else:
         parser(user_choice)
-        get_user_choice(user_choice)
+        #get_user_choice(user_choice)
     
