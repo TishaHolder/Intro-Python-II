@@ -6,6 +6,8 @@ from item import FlashLight
 from item import Binoculars
 from item import Directions
 from item import Chest
+from item import Pillow
+from item import Sword
 from item import Food
 from item import Water
 
@@ -27,7 +29,15 @@ to north. The smell of gold permeates the air."""),
 
     'treasure': Room("Treasure Chamber", """You've found the long-lost treasure
 chamber! Sadly, it has already been completely emptied by
-earlier adventurers. The only exit is to the south."""),
+earlier adventurers. Exit to the south or go north to slay the dragon."""),    
+
+    'dungeon': Room("Dungeon", """You might need a sword to slay the dragon. If you make it out alive,
+go south and get some much needed rest in the bedroom."""),
+
+'bedroom': Room("Bedroom", """I see you defeated the dragon. Now you can rest. When you are ready to start exploring again,
+you can exit to the south."""),
+
+
 }
 
 
@@ -40,6 +50,9 @@ room['overlook'].s_to = room['foyer']
 room['narrow'].w_to = room['foyer']
 room['narrow'].n_to = room['treasure']
 room['treasure'].s_to = room['narrow']
+room['treasure'].n_to = room['dungeon']
+room['dungeon'].s_to = room['bedroom']
+room['bedroom'].s_to = room['overlook']
 
 #Declare all the room items
 umbrella = Umbrella("umbrella", "protect yourself from the elements", "large")
@@ -47,12 +60,16 @@ flashlight = FlashLight("flashlight", """you might need this to see better.""", 
 binoculars = Binoculars("binoculars", """see the scenic views from the overlook.""", "100")
 directions = Directions("directions", """you will need this if you get lost.""", "portrait")
 chest = Chest("chest", """collect your treasures.""", "empty") 
+pillow = Pillow("pillow", """the bed is made of brass, you might need this to sleep better.""", "medium")
+sword = Sword("sword", """use this if you can't slay the dragon with your bare hands.""", "very sharp" )
 
 outside_items = [umbrella.name, flashlight.name, directions.name]
 foyer_items = [umbrella.name, flashlight.name, binoculars.name]
 overlook_items = [binoculars.name, flashlight.name, chest.name]
 narrow_items = [directions.name, flashlight.name]
 treasure_items = [chest.name, flashlight.name]
+bedroom_items = [pillow.name, flashlight.name, chest.name, directions.name]
+dungeon_items = [sword.name, flashlight.name, directions.name]
 
 # Add items to rooms
 room['outside'].room_items = outside_items
@@ -60,6 +77,8 @@ room['foyer'].room_items = foyer_items
 room['overlook'].room_items = overlook_items
 room['narrow'].room_items = narrow_items
 room['treasure'].room_items = treasure_items
+room['bedroom'].room_items = bedroom_items
+room['dungeon'].room_items = dungeon_items
 
 #Declare all player inventory items
 snacks = Food("snacks", "you might get the munchies", 100)
@@ -103,6 +122,19 @@ def process_directions(choice):
         elif player.current_room.name == room["treasure"].name and choice == "s":
             player.current_room = room['treasure'].s_to        
             player.current_room.room_items = room['narrow'].room_items 
+
+        elif player.current_room.name == room["treasure"].name and choice == "n":
+            player.current_room = room['treasure'].n_to        
+            player.current_room.room_items = room['dungeon'].room_items 
+
+        elif player.current_room.name == room["dungeon"].name and choice == "s":
+            player.current_room = room['dungeon'].s_to        
+            player.current_room.room_items = room['bedroom'].room_items 
+
+        elif player.current_room.name == room["bedroom"].name and choice == "s":
+            player.current_room = room['bedroom'].s_to        
+            player.current_room.room_items = room['overlook'].room_items 
+
         else:
             print("Ooops! There is nowhere out there...")  
 

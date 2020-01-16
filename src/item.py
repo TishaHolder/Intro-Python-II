@@ -62,3 +62,20 @@ class Water(Item):
     def __repr__(self):
         return super().__repr__() + ", type:" + self.type
 
+
+class Pillow(Item):
+    def __init__(self, name, description, softness):
+        super().__init__(name, description)
+        self.softness = softness
+
+    def __repr__(self):
+        return super().__repr__() + ", softness:" + self.softness
+
+class Sword(Item):
+    def __init__(self, name, description, blade):
+        super().__init__(name, description)
+        self.blade = blade
+
+    def __repr__(self):
+        return super().__repr__() + ", blade:" + self.blade
+
