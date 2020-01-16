@@ -40,7 +40,6 @@ you can exit to the south."""),
 
 }
 
-
 # Link rooms together
 room['outside'].n_to = room['foyer']
 room['foyer'].s_to = room['outside']
@@ -188,9 +187,7 @@ def parser(choice):
         process_user_request(parsed_entry)
         return verb_object
     else:
-        print("I am sorry. We did not understand your request. Please try your request again.")     
-
-
+        print("I am sorry. We did not understand your request. Please try your request again.")  
 #
 # Main
 #
@@ -214,10 +211,11 @@ player.player_inventory = [snacks.name, water.name]
 #
 # If the user enters "q", quit the game.
 print()
-while True:
-    print("\t**********************************")
-    print("\tTEXT ADVENTURE GAME")
-    print("\t**********************************")
+print("\t***************************************")
+print("\tWELCOME %s to the TEXT ADVENTURE GAME" %(player.name))
+print("\t***************************************")
+
+while True:    
     print('You are in the %s \nYou can "get" or "take" any of these items >> %s' %(player.current_room, player.current_room.room_items))
     print("\ti >>> view your inventory ")
     print("\tn >>> move to the north ")
@@ -226,11 +224,11 @@ while True:
     print("\tw >>> move to the west ")
     print("\tq >>> Exit")
     user_choice = input(">>> ")#reads in the menu choice entered by the user
+    print()
 
     if user_choice == "q":
         print("Thanks for Playing. Come again soon...")
         break
     else:
-        parser(user_choice)
-        #get_user_choice(user_choice)
+        parser(user_choice)       
     
