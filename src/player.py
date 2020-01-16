@@ -13,6 +13,9 @@ class Player:
     def add_item(self, found_item):
         self.player_inventory.append(found_item)
 
+    def drop_item(self, found_item_index):
+        del self.player_inventory[found_item_index]
+
 
 
 

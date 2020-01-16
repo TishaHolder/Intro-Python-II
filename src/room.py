@@ -21,6 +21,9 @@ class Room:
     def remove_item(self, found_item_index):
         del self.room_items[found_item_index]
 
+    def add_item(self, found_item):
+        self.room_items.append(found_item)
+
     def __str__(self):
         return self.name + ': ' + self.description
 

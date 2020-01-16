@@ -77,6 +77,7 @@ def parser(choice):
     verb_object = False
     get_word = "get"
     take_word = "take"
+    drop_word = "drop"
     found_item_index = -1
     found_item = None
 
@@ -88,6 +89,7 @@ def parser(choice):
 
         if get_word in parsed_entry or take_word in parsed_entry:
             #index method returns the index of where the item is in the list
+            #it returns a ValueError if it is not found. the if statement at the end of the line prevents the value error
             found_item_index = player.current_room.room_items.index(parsed_entry[1]) if parsed_entry[1] in player.current_room.room_items else -1
             if found_item_index >= 0:
                 found_item = player.current_room.room_items[found_item_index]
@@ -96,13 +98,19 @@ def parser(choice):
             else:
                 print("I am sorry, that item is not available in this room.")
 
-            #check the second word to see if it matches the items in the current room
-            #if it is found call a remove method
-            #if it is not there print an error message
+        elif drop_word in parsed_entry:
+            #index method returns the index of where the item is in the list
+            #it returns a ValueError if it is not found. the if statement at the end of the line prevents the value error
+            found_item_index = player.player_inventory.index(parsed_entry[1]) if parsed_entry[1] in player.player_inventory else -1
+            if found_item_index >= 0:
+                found_item = player.player_inventory[found_item_index]
+                player.current_room.add_item(found_item)
+                player.drop_item(found_item_index)
+            else:
+                print("I am sorry, that item is not in your inventory.")
 
-
-        return verb_object  
-    
+        else:
+            print("I am sorry. We couldn't understand your request. Please try your request again.")     
 
 
 def get_user_choice(choice):   
