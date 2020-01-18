@@ -5,10 +5,17 @@ from item import Item
 class Room:
     """The room should also have n_to, s_to, e_to, and w_to attributes which point to the room in that 
        respective direction."""
-    def __init__(self, name, description, room_items = []):
+    #you never want to pass mutable datatypes such as a lists or dictionaries as default arguments 
+    #eg: room_items=[]
+    #instead use room_items = None and use an if/else check to see if the argument is provided (see below)
+    def __init__(self, name, description, room_items = None):
         self.name = name 
         self.description = description
-        self.room_items = room_items    
+
+        if room_items is None:
+            self.room_items = []
+        else:
+            self.room_items = room_items    
 
         #None is used to declare an attribute in Python without a value
         #The None keyword is used to define a null variable

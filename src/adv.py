@@ -11,7 +11,6 @@ from item import Sword
 from item import Food
 from item import Water
 
-
 # Declare all the rooms
 room = {
     'outside':  Room("Outside Cave Entrance",
@@ -36,7 +35,6 @@ go south and get some much needed rest in the bedroom."""),
 
 'bedroom': Room("Bedroom", """I see you defeated the dragon. Now you can rest. When you are ready to start exploring again,
 you can exit to the south."""),
-
 
 }
 
@@ -85,57 +83,15 @@ water = Water("water", """this is going to be a long day, stay hydrated.""", "sp
 
 #process the 4 directions
 def process_directions(choice):
-    if choice == "i":        
-       print("Your inventory items: %s" %(player.player_inventory))
 
+    directions = ["n", "s", "e", "w"]
+
+    if choice == "i" or choice == "inventory":        
+       player.display_inventory()
+    elif choice in directions:
+        player.move_player(choice)  
     else:
-
-        if player.current_room.name == room["outside"].name and choice == "n":      
-            player.current_room = room['outside'].n_to        
-            player.current_room.room_items = room['foyer'].room_items
-        
-        elif player.current_room.name == room["foyer"].name and choice == "s":
-            player.current_room = room['foyer'].s_to        
-            player.current_room.room_items = room['outside'].room_items
-
-        elif player.current_room.name == room["foyer"].name and choice == "n":
-            player.current_room = room['foyer'].n_to        
-            player.current_room.room_items = room['overlook'].room_items 
-
-        elif player.current_room.name == room["foyer"].name and choice == "e":
-            player.current_room = room['foyer'].e_to        
-            player.current_room.room_items = room['narrow'].room_items 
-
-        elif player.current_room.name == room["overlook"].name and choice == "s":
-            player.current_room = room['overlook'].s_to        
-            player.current_room.room_items = room['foyer'].room_items 
-
-        elif player.current_room.name == room["narrow"].name and choice == "w":
-            player.current_room = room['narrow'].w_to        
-            player.current_room.room_items = room['foyer'].room_items 
-
-        elif player.current_room.name == room["narrow"].name and choice == "n":
-            player.current_room = room['narrow'].n_to        
-            player.current_room.room_items = room['treasure'].room_items 
-
-        elif player.current_room.name == room["treasure"].name and choice == "s":
-            player.current_room = room['treasure'].s_to        
-            player.current_room.room_items = room['narrow'].room_items 
-
-        elif player.current_room.name == room["treasure"].name and choice == "n":
-            player.current_room = room['treasure'].n_to        
-            player.current_room.room_items = room['dungeon'].room_items 
-
-        elif player.current_room.name == room["dungeon"].name and choice == "s":
-            player.current_room = room['dungeon'].s_to        
-            player.current_room.room_items = room['bedroom'].room_items 
-
-        elif player.current_room.name == room["bedroom"].name and choice == "s":
-            player.current_room = room['bedroom'].s_to        
-            player.current_room.room_items = room['overlook'].room_items 
-
-        else:
-            print("Ooops! There is nowhere out there...")  
+        print("I am sorry. We did not understand your request. Please try your request again.")
 
 def process_user_request(parsed_entry):
     get_word = "get"
@@ -178,6 +134,9 @@ def parser(choice):
     verb = False
     verb_object = False    
 
+    #employee_string = "john-doe-5000"
+    #you can use the syntax first, last, pay = employee_string.split("-") to create 3 different variables
+
     if len(parsed_entry) == 1:
         verb = True
         process_directions(choice)
@@ -195,8 +154,7 @@ def parser(choice):
 # Make a new player object that is currently in the 'outside' room.
 # Add items to player inventory
 
-player = Player("Tom", room["outside"].name, room["outside"].description)
-player.current_room.room_items = room["outside"].room_items
+player = Player(input("What is your name: "), room["outside"])
 player.player_inventory = [snacks.name, water.name]
 
 
@@ -216,18 +174,21 @@ print("\tWELCOME %s to the TEXT ADVENTURE GAME" %(player.name))
 print("\t***************************************")
 
 while True:    
-    print('You are in the %s \nYou can "get" or "take" any of these items >> %s' %(player.current_room, player.current_room.room_items))
-    print("\ti >>> view your inventory ")
+    player.display_room()
+    print()
+    print('\tget/take "item name" >>> add an item from a room to your inventory ')
+    print('\tdrop "item name" >>> leave one of your items in a room ')
+    print("\ti/inventory >>> view your inventory ")
     print("\tn >>> move to the north ")
     print("\ts >>> move to the south ")
     print("\te >>> move to the east ")
-    print("\tw >>> move to the west ")
+    print("\tw >>> move to the west ")    
     print("\tq >>> Exit")
-    user_choice = input(">>> ")#reads in the menu choice entered by the user
+    user_choice = input(">>> ").lower()#reads in the menu choice entered by the user
     print()
 
     if user_choice == "q":
-        print("Thanks for Playing. Come again soon...")
+        print("Thanks for Playing. Hope you will join us on this adventure again soon...")
         break
     else:
         parser(user_choice)       
